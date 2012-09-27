@@ -23,7 +23,6 @@ module Sprockets
 
         app.assets = Sprockets::Environment.new(app.root.to_s) do |env|
           env.version = ::Rails.env + "-#{config.assets.version}"
-
           if config.assets.logger != false
             env.logger = config.assets.logger || ::Rails.logger
           end
@@ -35,7 +34,9 @@ module Sprockets
 
         manifest_path = File.join(::Rails.public_path, config.assets.prefix, "manifest.yml")
         if File.exist?(manifest_path)
-          config.assets.digests = YAML.load_file(manifest_path)
+          manifest = YAML.load_file(manifest_path)
+          config.assets.asset_digests  = manifest[:asset_digests]  || {}
+          config.assets.source_digests = manifest[:source_digests] || {}
         end
 
         ActiveSupport.on_load(:action_view) do

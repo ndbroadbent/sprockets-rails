@@ -97,7 +97,7 @@ module Sprockets
         end
 
         def asset_digests
-          ::Rails.application.config.assets.digests
+          ::Rails.application.config.assets.asset_digests
         end
 
         def compile_assets?

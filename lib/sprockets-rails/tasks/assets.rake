@@ -43,7 +43,9 @@ namespace :assets do
       config = ::Rails.application.config
       config.assets.compile = true
       config.assets.digest  = digest unless digest.nil?
-      config.assets.digests = {}
+      config.assets.clean_after_precompile = true if config.assets.clean_after_precompile.nil?
+      config.assets.asset_digests  ||= {}
+      config.assets.source_digests ||= {}
 
       original_assets = Sprockets::Rails::Bootstrap.original_assets
       env = if !config.assets.digest && original_assets
@@ -60,7 +62,11 @@ namespace :assets do
                                                       target,
                                                       config.assets.precompile,
                                                       :digest => config.assets.digest,
-                                                      :manifest => digest.nil?)
+                                                      :clean_after_precompile => config.assets.clean_after_precompile,
+                                                      :manifest => digest.nil?,
+                                                      :asset_digests  => config.assets.asset_digests,
+                                                      :source_digests => config.assets.source_digests,
+                                                      :digest_precompiled => config.assets.digest_precompiled)
       compiler.compile
     end
 
